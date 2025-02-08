@@ -1,0 +1,64 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.newButton {
+  border: 2px solid lightblue;
+  transform: scale(2.5);
+  border-radius: 5px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainWithMes {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 25px;
+}
+
+.box {
+  display: grid;
+  grid-template-columns: repeat(3, 50px);
+  gap: 10px;
+}
+
+.numbers {
+  padding: 20px;
+  text-align: center;
+  border: 1px solid black;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px
+}
+
+.winMessage {
+  color: lightgreen;
+}
+
+.hintContainer {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.hint {
+  border: 2px solid black;
+  padding: 15px;
+}
+
+.hintP {
+  color: darkgray;
+}
