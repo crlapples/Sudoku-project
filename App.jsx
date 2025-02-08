@@ -14,6 +14,8 @@ function isValid(grid) {
       }
       if (colSum !== 15) return false;
     }
+
+    return true;
   };
   
 function generateSudoku(grid, usedNumbers) {
@@ -89,7 +91,7 @@ const App = () => {
       <button onClick={newSudoku} className="newButton">Generate Puzzle</button>
       <div className="main">
         <div className="mainWithMes">
-          {sudoku (
+          {sudoku && (
             <div className="box">
               {sudoku.flat().map((num, index) => (
                 <div key={index} className="numbers">
