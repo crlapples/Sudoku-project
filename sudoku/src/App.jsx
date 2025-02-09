@@ -161,6 +161,7 @@ const App = () => {
 
   return (
     <div className="appContainer">
+      <p className="disclaimer">Disclaimer: It may become unresponsive or slow as it's calculating a lot of possibilities. I don't have a backend to generate and store premade puzzles, so this is the most I could do.</p>
       <button onClick={newSudoku} className="newButton">
         {isLoading ? "Generating..." : "Generate Puzzle"}
       </button>

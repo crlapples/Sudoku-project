@@ -1,9 +1,18 @@
 .appContainer {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   gap: 100px;
+}
+
+.disclaimer {
+  position: absolute;
+  top: 25px;
+  color: darkgray;
+  margin-right: 15px;
+  margin-left: 15px;
 }
 
 .newButton {
@@ -130,5 +139,13 @@
 
   .time {
     right: 50px;
+  }
+
+  .appContainer {
+    width: 100%;
+  }
+
+  .disclaimer {
+    margin-left: 23.5px;
   }
 }
