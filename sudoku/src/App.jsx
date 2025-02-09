@@ -18,11 +18,7 @@ function isValid(grid) {
   return true;
 }
 
-function generateSudoku(grid, usedNumbers, depth = 0) {
-  if (depth > 100) {
-    return generateNewPuzzle();
-  }
-
+function generateSudoku(grid, usedNumbers) {
   if (usedNumbers.size === 9) {
     if (isValid(grid)) {
       return grid;
@@ -45,7 +41,7 @@ function generateSudoku(grid, usedNumbers, depth = 0) {
           grid[i][j] = randomNum;
           usedNumbers.add(randomNum);
 
-          let result = generateSudoku(grid, new Set(usedNumbers), depth + 1);
+          let result = generateSudoku(grid, new Set(usedNumbers));
           if (result) {
             return result;
           }
