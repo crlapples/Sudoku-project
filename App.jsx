@@ -1,118 +1,195 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./App.css";
 
 function isValid(grid) {
-    for (let i = 0; i < 3; i++) {
-      let rowSum = grid[i].reduce((a, b) => a + b, 0);
-      if (rowSum !== 15) return false;
-    }
-    
-    for (let j = 0; j < 3; j++) {
-      let colSum = 0;
-      for (let i = 0; i < 3; i++) {
-        colSum += grid[i][j];
-      }
-      if (colSum !== 15) return false;
-    }
+  for (let i = 0; i < 3; i++) {
+    let rowSum = grid[i].reduce((a, b) => a + b, 0);
+    if (rowSum !== 15) return false;
+  }
 
-    return true;
-  };
-  
-function generateSudoku(grid, usedNumbers) {
-    if (usedNumbers.length === 9) {
-      if (isValid(grid)) {
-        return grid;
-      }
-      return null;
-    }
-    
-    let availableNumbers = [];
-    for (let num = 1; num <= 9; num++) {
-      if (!usedNumbers.has(num)) {
-        availableNumbers.push(num);
-      }
-    }
-    
+  for (let j = 0; j < 3; j++) {
+    let colSum = 0;
     for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (grid[i][j] === 0) {
-          for (let num of availableNumbers) {
-            let randomNum = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
-            grid[i][j] = randomNum;
-            usedNumbers.add(randomNum);
-            
-            let result = generateSudoku(grid, usedNumbers);
-            if (result) {
-              return result;
-            }
-            
-            grid[i][j] = 0;
-            usedNumbers.delete(randomNum);
+      colSum += grid[i][j];
+    }
+    if (colSum !== 15) return false;
+  }
+
+  return true;
+}
+
+function generateSudoku(grid, usedNumbers) {
+  if (usedNumbers.size === 9) {
+    if (isValid(grid)) {
+      return grid;
+    }
+    return null;
+  }
+
+  let availableNumbers = [];
+  for (let num = 1; num <= 9; num++) {
+    if (!usedNumbers.has(num)) {
+      availableNumbers.push(num);
+    }
+  }
+
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (grid[i][j] === 0) {
+        for (let num of availableNumbers) {
+          let randomNum = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+          grid[i][j] = randomNum;
+          usedNumbers.add(randomNum);
+
+          let result = generateSudoku(grid, new Set(usedNumbers));
+          if (result) {
+            return result;
           }
+
+          grid[i][j] = 0;
+          usedNumbers.delete(randomNum);
         }
       }
     }
-    
-    return null;
-  };
+  }
+
+  return null;
+}
 
 const App = () => {
   const [sudoku, setSudoku] = useState(null);
-  const [num1, setNum1] = useState("");
-  const [num2, setNum2] = useState("");
-  const [num3, setNum3] = useState("");
-  const [num4, setNum4] = useState("");
-  const [num5, setNum5] = useState("");
-  const [num6, setNum6] = useState("");
-  const [num7, setNum7] = useState("");
-  const [num8, setNum8] = useState("");
-  const [num9, setNum9] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [active, setActive] = useState(false);
+  const [time, setTime] = useState(0);
+  const [timerActive, setTimerActive] = useState(false);
+  const [fixedGrid, setFixedGrid] = useState([]);
   
   const newSudoku = () => {
+    setIsLoading(true);
+    setTime(0);
+    setTimerActive(false);
+    setMessage("");
     let grid = [
       [0, 0, 0],
       [0, 0, 0],
       [0, 0, 0]
     ];
     let usedNumbers = new Set();
-    let generateNewSudoku = generateSudoku(grid, usedNumbers);
-    setSudoku(generateNewSudoku);
-  }
-  
-  const win = () => {
-    if (num1 + num2 + num3 == 15 && num4 + num5 + num6 == 15 && num7 + num8 + num9 == 15 && num1 + num4 + num7 == 15 && num2 + num5 + num8 == 15 && num3 + num6 + num9 == 15) {
-      setMessage("Completed✓");
+
+    setTimeout(() => {
+      let generateNewSudoku = generateSudoku(grid, usedNumbers);
+
+      if (generateNewSudoku) {
+        const cellsToReveal = 3;
+        let count = 0;
+
+        while (count < (9 - cellsToReveal)) {
+          const row = Math.floor(Math.random() * 3);
+          const col = Math.floor(Math.random() * 3);
+
+          if (generateNewSudoku[row][col] !== 0) {
+            generateNewSudoku[row][col] = 0;
+            count++;
+          }
+        }
+        
+        const fixedNumbers = generateNewSudoku.map(row => row.slice());
+        
+        setSudoku(generateNewSudoku);
+        setFixedGrid(fixedNumbers);
+        setIsLoading(false);
+        startTimer();
+      }
+    }, 0);
+  };
+
+  useEffect(() => {
+    let interval;
+    if (timerActive) {
+      interval = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval);
+  }, [timerActive]);
+
+  const startTimer = () => {
+    setTimerActive(true);
+  };
+
+  const stopTimer = () => {
+    setTimerActive(false);
+  };
+
+  const unHide = () => {
+    setActive(prevState => !prevState);
+  };
+
+  const handleInputChange = (e, row, col) => {
+    const newValue = parseInt(e.target.value, 10);
+    
+    if ((newValue >= 1 && newValue <= 9) || isNaN(newValue)) {
+      const newSudoku = sudoku.map((r, rIdx) => r.map((c, cIdx) => (rIdx === row && cIdx === col ? (isNaN(newValue) ? 0 : newValue) : c))
+      );
+      setSudoku(newSudoku);
+      
+      if (isValid(newSudoku)) {
+        setMessage("Completed✔");
+        stopTimer();
+      } else {
+        setMessage("");
+      }
     }
   };
-  
+
   return (
     <div className="appContainer">
-      <button onClick={newSudoku} className="newButton">Generate Puzzle</button>
+      <button onClick={newSudoku} className="newButton">
+        {isLoading ? "Generating..." : "Generate Puzzle"}
+      </button>
       <div className="main">
         <div className="mainWithMes">
-          {sudoku && Array.isArray(sudoku) && (
-            <div className="box">
-              {sudoku.flat().map((num, index) => (
-                <div key={index} className="numbers">
-                  {num}
-                </div>
-              ))}
-            </div>
+          {isLoading ? (
+            <div className="loadingMessage">Generating puzzle...</div>
+          ) : (
+            sudoku && Array.isArray(sudoku) && (
+              <div className="box">
+                {sudoku.flat().map((num, index) => {
+                  const row = Math.floor(index / 3);
+                  const col = index % 3;
+                  return (
+                    <div key={index} className="numbers">
+                      {fixedGrid[row][col] !== 0 ? (
+                        <span className="clue">{sudoku[row][col]}</span>
+                        ) : (
+                        <input
+                          type="number"
+                          min="1"
+                          max="9"
+                          value={sudoku[row][col] === 0 ? '' : sudoku[row][col]}
+                          onChange={(e) => handleInputChange(e, row, col)}
+                          className="input" 
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )
           )}
           <div className="details">
-            <div className="winMessage">
-              
-            </div>
-            <div className="time">
-              
-            </div>
+            <div className="winMessage">{message}</div>
+            <div className="time">{Math.floor(time / 60)}:{time % 60 < 10 ? `0${time % 60}` : time % 60}</div>
           </div>
         </div>
       </div>
       <div className="hintContainer">
-        <button className="hint">Hint</button>
-        <p className="hintP">:Sum each row and column to the same value</p>
+        <button onClick={unHide} className={`hint ${active ? '' : 'center'}`}>Hint</button>
+        <p className={`hintP ${active ? '' : 'hide'}`}>:Sum each row and column to the same value</p>
       </div>
     </div>
   );
