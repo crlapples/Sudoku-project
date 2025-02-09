@@ -20,7 +20,7 @@ function isValid(grid) {
 
 function generateSudoku(grid, usedNumbers, attempts) {
   if (attempts > 700) {
-    return generateNewGrid();
+    return generateNewPuzzle();
   }
 
   if (usedNumbers.size === 9) {
@@ -68,7 +68,7 @@ function generateNewPuzzle() {
   ];
   let attempts = 0;
   let usedNumbers = new Set();
-  return generateSudoku(grid, usedNumbers);
+  return generateSudoku(grid, usedNumbers, attempts);
 }
 
 const App = () => {
