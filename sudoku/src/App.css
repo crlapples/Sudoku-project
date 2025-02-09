@@ -45,9 +45,8 @@
 
 .time {
   position: absolute;
-  top: 75;
+  bottom: 0;
   right: 0;
-  height: 75px;
 }
 
 .input {
@@ -86,13 +85,14 @@
   justify-content: center;
   align-items: center;
   gap: 50px;
+  height: 100px;
 }
 
 .winMessage {
   color: lightgreen;
   position: absolute;
   right: 0;
-  height: 75px;
+  top: 0;
 }
 
 .hintContainer {
@@ -121,4 +121,10 @@
 
 .center {
   margin-right: 320px;
+}
+
+@media (max-width: 767px) {
+  .mainWithMes {
+    width: 275px;
+  }
 }
