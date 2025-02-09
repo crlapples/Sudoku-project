@@ -125,6 +125,10 @@
 
 @media (max-width: 767px) {
   .mainWithMes {
-    width: 275px;
+    width: 310px;
+  }
+
+  .time {
+    right: 50;
   }
 }
