@@ -18,7 +18,11 @@ function isValid(grid) {
   return true;
 }
 
-function generateSudoku(grid, usedNumbers) {
+function generateSudoku(grid, usedNumbers, depth = 0) {
+  if (depth > 100) {
+    return generateNewPuzzle();
+  }
+
   if (usedNumbers.size === 9) {
     if (isValid(grid)) {
       return grid;
@@ -41,7 +45,7 @@ function generateSudoku(grid, usedNumbers) {
           grid[i][j] = randomNum;
           usedNumbers.add(randomNum);
 
-          let result = generateSudoku(grid, new Set(usedNumbers));
+          let result = generateSudoku(grid, new Set(usedNumbers), depth + 1);
           if (result) {
             return result;
           }
@@ -56,6 +60,16 @@ function generateSudoku(grid, usedNumbers) {
   return null;
 }
 
+function generateNewPuzzle() {
+  let grid = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+  ];
+  let usedNumbers = new Set();
+  return generateSudoku(grid, usedNumbers);
+}
+
 const App = () => {
   const [sudoku, setSudoku] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +79,7 @@ const App = () => {
   const [timerActive, setTimerActive] = useState(false);
   const [fixedGrid, setFixedGrid] = useState([]);
   const [puzzling, setPuzzling] = useState(false);
-  
+
   const newSudoku = () => {
     setIsLoading(true);
     setPuzzling(false);
