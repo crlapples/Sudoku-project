@@ -127,8 +127,8 @@ const App = () => {
     let interval;
     if (timerActive) {
       interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 1);
-      }, 1000);
+        setTime((prevTime) => prevTime + 10);
+      }, 10);
     } else {
       clearInterval(interval);
     }
@@ -203,7 +203,7 @@ const App = () => {
           )}
           <div className="details">
             <div className="winMessage">{message}</div>
-            <div className={`time ${puzzling ? '' : 'hidden'}`}>{Math.floor(time / 60)}:{time % 60 < 10 ? `0${time % 60}` : time % 60}</div>
+            <div className={`time ${puzzling ? '' : 'hidden'}`}>{Math.floor(time / 60000)}:{Math.floor((time % 60000) / 1000) < 10 ? `0${Math.floor((time % 60000) / 1000)}` : Math.floor((time % 60000) / 1000)}.{Math.floor((time % 1000) / 10) < 10 ? `0${Math.floor((time % 1000) / 10)}` : Math.floor((time % 1000) / 10)}</div>
           </div>
         </div>
       </div>
