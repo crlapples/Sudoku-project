@@ -18,11 +18,7 @@ function isValid(grid) {
   return true;
 }
 
-function generateSudoku(grid, usedNumbers, attempts) {
-  if (attempts > 700) {
-    return generateNewPuzzle();
-  }
-
+function generateSudoku(grid, usedNumbers) {
   if (usedNumbers.size === 9) {
     if (isValid(grid)) {
       return grid;
@@ -45,7 +41,7 @@ function generateSudoku(grid, usedNumbers, attempts) {
           grid[i][j] = randomNum;
           usedNumbers.add(randomNum);
 
-          let result = generateSudoku(grid, new Set(usedNumbers), attempts + 1);
+          let result = generateSudoku(grid, new Set(usedNumbers));
           if (result) {
             return result;
           }
@@ -66,9 +62,8 @@ function generateNewPuzzle() {
     [0, 0, 0],
     [0, 0, 0]
   ];
-  let attempts = 0;
   let usedNumbers = new Set();
-  return generateSudoku(grid, usedNumbers, attempts);
+  return generateSudoku(grid, usedNumbers);
 }
 
 const App = () => {
@@ -95,8 +90,7 @@ const App = () => {
     let usedNumbers = new Set();
 
     setTimeout(() => {
-      let attempts = 0;
-      let generateNewSudoku = generateSudoku(grid, usedNumbers, attempts);
+      let generateNewSudoku = generateSudoku(grid, usedNumbers);
 
       if (generateNewSudoku) {
         const cellsToReveal = 3;
